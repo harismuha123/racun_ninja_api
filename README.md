@@ -1,3 +1,3 @@
-# Secure Software System Development Project
+# Senior Design Project
 
-A secure login/register system
+A bill management service API.
