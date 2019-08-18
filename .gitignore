@@ -1,0 +1,9 @@
+/vendor
+/.vscode
+/.idea
+/composer.lock
+/logs/*
+/config/Config.php
+/tests/build
+!.htaccess
+config.php
