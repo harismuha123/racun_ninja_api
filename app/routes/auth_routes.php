@@ -1,5 +1,8 @@
 <?php
- /**
+
+use \Firebase\JWT\JWT;
+
+/**
  * @OA\Post(
  *      path="/auth/register",
  *      tags={"auth"},
@@ -21,7 +24,7 @@
  *      }
  * )
  */
-Flight::route("POST /auth/register", function() {
+Flight::route("POST /auth/register", function () {
     $data = Flight::request()->data->getData();
     /* Pass in a data object for model validation; if invalid, the request will terminate. */
     Flight::validate(RegisterModel::class, $data);
@@ -34,8 +37,8 @@ Flight::route("POST /auth/register", function() {
     $existingEmail = Flight::rm()->get_user_by_email($user["email_address"]);
 
     $validPassword = Flight::rv()->validatePassword($user["password"]);
-    
-    switch(true) {
+
+    switch (true) {
         case $existingUsername:
             Flight::json(["message" => "Username is already taken!"]);
             break;
@@ -61,7 +64,7 @@ Flight::route("POST /auth/register", function() {
     }
 });
 
- /**
+/**
  * @OA\Post(
  *      path="/auth/login",
  *      tags={"auth"},
@@ -83,25 +86,49 @@ Flight::route("POST /auth/register", function() {
  *      }
  * )
  */
-Flight::route("POST /auth/login", function() {
+Flight::route("POST /auth/login", function () {
     $data = Flight::request()->data->getData();
     /* Pass in a data object for model validation; if invalid, the request will terminate. */
     Flight::validate(LoginModel::class, $data);
     $db_user = Flight::lm()->get_user($data['username_or_email_address']);
-    if ($db_user){
-        if (password_verify($data["password"], $db_user["password"])){
-            Flight::json(['email' => $db_user["email"], 'valid' => true]);
-        }else{
+    if ($db_user) {
+        if (password_verify($data["password"], $db_user["password"])) {
+
+            $secret_key = AUTH_SECRET;
+            $issuer_claim = "RACUN_NINJA_SERVER";
+            $audience_claim = "RACUN_NINJA_USER";
+            $issuedat_claim = time();
+            $notbefore_claim = $issuedat_claim + 10;
+            $expire_claim = $issuedat_claim + 86400;
+
+            unset($db_user["password"]);
+            unset($db_user["mobile_number"]);
+            unset($db_user["name"]);
+            $token = array(
+                "iss" => $issuer_claim,
+                "aud" => $audience_claim,
+                "iat" => $issuedat_claim,
+                "nbf" => $notbefore_claim,
+                "exp" => $expire_claim,
+                "data" => $db_user,
+            );
+
             Flight::json([
-                'message' => 'Invalid password!'
+                'message' => 'Successful login!',
+                'jwt' => JWT::encode($token, $secret_key),
+                'expireAt' => $expire_claim,
+            ]);
+        } else {
+            Flight::json([
+                'message' => 'Invalid password!',
             ]);
         }
-    }else{
+    } else {
         Flight::json(['message' => 'Invalid username or email address!']);
     }
 });
 
- /**
+/**
  * @OA\Get(
  *      path="/auth/reset/{email_or_username}",
  *      tags={"auth"},
@@ -127,11 +154,11 @@ Flight::route("POST /auth/login", function() {
  *      }
  * )
  */
-Flight::route("GET /auth/reset/@email_or_username", function($email_or_username) {
+Flight::route("GET /auth/reset/@email_or_username", function ($email_or_username) {
     Flight::json(Flight::tm()->generate_email_token($email_or_username));
 });
 
- /**
+/**
  * @OA\Put(
  *      path="/auth/reset/",
  *      tags={"auth"},
@@ -153,12 +180,12 @@ Flight::route("GET /auth/reset/@email_or_username", function($email_or_username)
  *      }
  * )
  */
-Flight::route("PUT /auth/reset", function() {
+Flight::route("PUT /auth/reset", function () {
     $data = Flight::request()->data->getData();
     /* Pass in a data object for model validation; if invalid, the request will terminate. */
     Flight::validate(PasswordResetModel::class, $data);
     $token = Flight::tm()->get_email_token($data["token"]);
-    switch(true) {
+    switch (true) {
         case !$token:
             Flight::json(["message" => "Reset token does not exist!"]);
             break;
@@ -167,10 +194,10 @@ Flight::route("PUT /auth/reset", function() {
             break;
         default:
             $user = Flight::lm()->get_user($token["email_or_username"]);
-            $validPassword = Flight::rv()->validatePassword($data["new_password"]);    
+            $validPassword = Flight::rv()->validatePassword($data["new_password"]);
 
-            if($user) {
-                switch(true) {
+            if ($user) {
+                switch (true) {
                     case !$validPassword["valid"]:
                         Flight::json(["message" => $validPassword["message"]]);
                         break;
