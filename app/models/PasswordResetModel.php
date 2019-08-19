@@ -15,15 +15,6 @@ class PasswordResetModel {
 
             /**
      * @OA\Property(
-     * description="Old password",
-     * required=true
-     * )
-     * @var string
-     */
-    public $old_password;
-
-            /**
-     * @OA\Property(
      * description="New password",
      * required=true
      * )

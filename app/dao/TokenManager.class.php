@@ -5,66 +5,6 @@ require_once "Mailer.class.php";
 class TokenManager extends BaseManager
 {
 
-    public function generateSMS($email)
-    {
-        $verification_code = mt_rand(100000, 999999);
-
-        $query = "INSERT INTO tokens(user_email, token, created_at, valid_until)
-                  VALUES (:user_email, :token, :created_at, :valid_until)";
-
-        $input = array(
-            "user_email" => $email,
-            "token" => '' . $verification_code,
-            "created_at" => date('Y-m-d H:i:s'),
-            "valid_until" => date('Y-m-d H:i:s', strtotime('+30 seconds')),
-        );
-
-        $statement = $this->pdo->prepare($query);
-        $statement->execute($input);
-
-        $data = array(
-            'from' => 'SSSD',
-            'text' => 'Your verification code is ' . $verification_code,
-            'to' => '387644134675',
-            'username' => 'harism',
-            'access_token' => hash("sha256", "haris-m"),
-        );
-
-        $curl = curl_init();
-
-        $fieldstring = "";
-
-        foreach ($data as $key => $value) {
-            $fieldstring .= $key . '=' . $value . '&';
-        }
-
-        rtrim($fieldstring, '&');
-
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://ibu-sms.adnan.dev/api/sms',
-            CURLOPT_POST => count($data),
-            CURLOPT_POSTFIELDS => $fieldstring,
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_VERBOSE => 1,
-            CURLOPT_HEADER => 1,
-            CURLOPT_SSL_VERIFYHOST => 0,
-            CURLOPT_SSL_VERIFYPEER => 0,
-        ));
-
-        $resp = curl_exec($curl);
-        curl_close($curl);
-
-        return array('message' => 'SMS with verification code sent! The code expires in 30 seconds', 'success' => true);
-    }
-
-    public function get_token($token, $email)
-    {
-        $query = "SELECT * FROM tokens WHERE token = ? AND user_email = ?";
-        $statement = $this->pdo->prepare($query);
-        $statement->execute([$token, $email]);
-        return $statement->fetch();
-    }
-
     public function generate_email_token($email_or_username)
     {
         $newStatement = $this->pdo->prepare(
