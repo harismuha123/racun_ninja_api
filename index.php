@@ -6,6 +6,8 @@
 require_once __DIR__."/vendor/autoload.php";
 require_once __DIR__."/docs/swagger.php";
 
+use \Firebase\JWT\JWT;
+
 /**
  * Required files, modules & libraries.
  */
@@ -27,6 +29,22 @@ foreach (glob(__DIR__."/app/dao/*.php") as $class) {
 /**
  * Register the required classes
  */
+
+Flight::before("start", function(&$params, &$output) {
+    /* authorize for all routes containing the word 'private' */
+    if (strpos(Flight::request()->url, "private") !== false) {
+        $jwt = getallheaders()["Authorization"];
+        try {
+            $decoded_token = (array)JWT::decode($jwt, AUTH_SECRET, array("HS256"));
+            $decoded_token["data"] = (array)$decoded_token["data"];
+            Flight::set("id", $decoded_token["data"]["user_id"]);
+        } catch (Exception $e) {
+            Flight::clear("id");
+            Flight::halt(401, Flight::json(array("status" => "Authentication token missing!")));
+            die;
+        }
+    }
+});
 
 Flight::register('rv', 'RequestValidator');
 Flight::register('lv', 'LoginValidator');
