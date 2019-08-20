@@ -19,16 +19,12 @@ use \Firebase\JWT\JWT;
  *           response=400,
  *           description="Registration failed.",
  *      ),
- *     security={
- *          {"api_key": {}}
- *      }
  * )
  */
 Flight::route("POST /auth/register", function () {
-    $data = Flight::request()->data->getData();
+    $user = Flight::request()->data->getData();    
     /* Pass in a data object for model validation; if invalid, the request will terminate. */
-    Flight::validate(RegisterModel::class, $data);
-    $user = Flight::request()->data->getData();
+    Flight::validate(RegisterModel::class, $user);
 
     $validUsername = Flight::rv()->validateUsername($user["username"]);
     $existingUsername = Flight::rm()->get_user($user["username"]);
@@ -81,9 +77,6 @@ Flight::route("POST /auth/register", function () {
  *           response=400,
  *           description="Log in failed.",
  *      ),
- *     security={
- *          {"api_key": {}}
- *      }
  * )
  */
 Flight::route("POST /auth/login", function () {
@@ -149,9 +142,6 @@ Flight::route("POST /auth/login", function () {
  *           response=400,
  *           description="Log in failed.",
  *      ),
- *     security={
- *          {"api_key": {}}
- *      }
  * )
  */
 Flight::route("GET /auth/reset/@email_or_username", function ($email_or_username) {
@@ -175,9 +165,6 @@ Flight::route("GET /auth/reset/@email_or_username", function ($email_or_username
  *           response=400,
  *           description="Log in failed.",
  *      ),
- *     security={
- *          {"api_key": {}}
- *      }
  * )
  */
 Flight::route("PUT /auth/reset", function () {

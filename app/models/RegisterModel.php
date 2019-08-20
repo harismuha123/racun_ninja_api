@@ -4,7 +4,8 @@
  * @OA\Schema(
  * )
  */
-class RegisterModel {
+class RegisterModel
+{
     /**
      * @OA\Property(
      * description="Name of user registering.",
@@ -32,7 +33,7 @@ class RegisterModel {
      */
     public $mobile_number;
 
-        /**
+    /**
      * @OA\Property(
      * description="Username of user registering.",
      * required=true
@@ -41,8 +42,7 @@ class RegisterModel {
      */
     public $username;
 
-
-        /**
+    /**
      * @OA\Property(
      * description="Password of user registering.",
      * required=true
@@ -51,7 +51,7 @@ class RegisterModel {
      */
     public $password;
 
-            /**
+    /**
      * @OA\Property(
      * description="Repeated password of user registering.",
      * required=true

@@ -1,8 +1,10 @@
 <?php
 
-class RegisterManager extends BaseManager{
+class RegisterManager extends BaseManager
+{
 
-    public function add_user($input) {
+    public function add_user($input)
+    {
         try {
             $this->pdo->query("ALTER TABLE users AUTO_INCREMENT = 1");
 
@@ -14,12 +16,12 @@ class RegisterManager extends BaseManager{
                 email_address => $input["email_address"],
                 mobile_number => $input["mobile_number"],
                 username => $input["username"],
-                password => password_hash($input["password"], PASSWORD_DEFAULT)
+                password => password_hash($input["password"], PASSWORD_DEFAULT),
             );
-            $statement-> execute($data);
+            $statement->execute($data);
             return array("message" => "User added successfully!", 'success' => true);
         } catch (PDOException $e) {
-            if($e->errorInfo[1] == 1062) {
+            if ($e->errorInfo[1] == 1062) {
                 return array("message" => "User already exists!", 'success' => false);
             } else {
                 return array("message" => "Error while adding user!", 'success' => false);
@@ -27,17 +29,14 @@ class RegisterManager extends BaseManager{
         }
     }
 
-    public function get_user($username) {
-        $query = "SELECT * FROM users WHERE username = ?";
+    public function get_user($credentials)
+    {
+        $query = "SELECT * FROM users WHERE username = :username OR email = :email";
         $statement = $this->pdo->prepare($query);
-        $statement->execute([$username]);
-        return $statement->fetch();
-    }
-
-    public function get_user_by_email($email) {
-        $query = "SELECT * FROM users WHERE email = ?";
-        $statement = $this->pdo->prepare($query);
-        $statement->execute([$email]);
+        $statement->execute([
+            "username" => $credentials,
+            "email" => $credentials,
+        ]);
         return $statement->fetch();
     }
 }

@@ -51,6 +51,7 @@ Flight::register('lv', 'LoginValidator');
 Flight::register('lm', 'LoginManager');
 Flight::register('tm', 'TokenManager');
 Flight::register('rm', 'RegisterManager');
+Flight::register('pm', 'ProviderManager');
 
 
 Flight::route('OPTIONS /auth/*', function() {
