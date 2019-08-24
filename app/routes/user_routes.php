@@ -36,6 +36,10 @@
  */
 Flight::route("GET /private/users/@email_or_username", function ($email_or_username) {
     $user = Flight::rm()->get_user($email_or_username);
-    unset($user["password"]);
-    Flight::json($user);
+    if ($user) {
+        unset($user["password"]);
+        Flight::json($user);
+    } else {
+        Flight::json(["message" => "User does not exist."]);
+    }
 });

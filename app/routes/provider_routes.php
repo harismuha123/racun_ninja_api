@@ -111,8 +111,14 @@ Flight::route("GET /private/providers", function () {
  */
 Flight::route("GET /private/providers/@provider_id", function ($provider_id) {
     $provider = Flight::pm()->get_provider_by_id($provider_id);
-    Flight::json([
-        "data" => $provider
-    ]);
+    if($provider) {
+        Flight::json([
+            "data" => $provider
+        ]);
+    } else {
+        Flight::json([
+            "message" => "Provider does not exist"
+        ]);
+    }
 });
 
