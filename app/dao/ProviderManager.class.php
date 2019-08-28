@@ -26,7 +26,7 @@ class ProviderManager extends BaseManager
             "SELECT * FROM providers WHERE provider_id = :provider_id"
         );
         $statement->execute([
-            "provider_id" => $id
+            "provider_id" => $id,
         ]);
         return $statement->fetch();
     }

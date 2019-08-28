@@ -26,6 +26,9 @@ foreach (glob(__DIR__."/app/models/*.php") as $model) {
 foreach (glob(__DIR__."/app/dao/*.php") as $class) {
     require_once $class;
 }
+foreach (glob(__DIR__."/app/adapters/*.php") as $adapter) {
+    require_once $adapter;
+}
 /**
  * Register the required classes
  */
@@ -52,6 +55,9 @@ Flight::register('lm', 'LoginManager');
 Flight::register('tm', 'TokenManager');
 Flight::register('rm', 'RegisterManager');
 Flight::register('pm', 'ProviderManager');
+Flight::register('rum', 'ResidentialUnitManager');
+Flight::register('ta', 'TelemachAdapter');
+
 
 
 Flight::route('OPTIONS /auth/*', function() {
