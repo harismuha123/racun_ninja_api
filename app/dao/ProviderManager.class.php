@@ -5,8 +5,8 @@ class ProviderManager extends BaseManager
     public function add_provider($provider)
     {
         $statement = $this->pdo->prepare(
-            "INSERT INTO providers(name, logo, uri)
-             VALUES(:name, :logo, :uri)"
+            "INSERT INTO providers(name)
+             VALUES(:name)"
         );
         $statement->execute($provider);
     }

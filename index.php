@@ -56,6 +56,7 @@ Flight::register('tm', 'TokenManager');
 Flight::register('rm', 'RegisterManager');
 Flight::register('pm', 'ProviderManager');
 Flight::register('rum', 'ResidentialUnitManager');
+Flight::register('bm', 'BillManager');
 Flight::register('ta', 'TelemachAdapter');
 
 

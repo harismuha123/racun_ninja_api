@@ -272,9 +272,9 @@ Flight::route("POST /private/residential_units/add_provider", function() {
     $request = Flight::request()->data->getData();
     Flight::validate(ResidentialUnitProviderModel::class, $request);
 
-    $success = Flight::rum()->add_providers_to_residential_unit($request);
+    $message = Flight::rum()->add_providers_to_residential_unit($request);
     
     Flight::json([
-        "message" => "Providers added successfully!"
+        "message" => $message
     ]);
 });

@@ -8,7 +8,7 @@ class BaseAdapter
 
     public function __construct($url)
     {
-        $this->$htmloptions = TagFilter::GetHTMLOptions();
+        $this->htmloptions = TagFilter::GetHTMLOptions();
         $this->url = $url;
         $this->web = new WebBrowser(array("extractforms" => true));
         $this->result = $this->web->Process($url);

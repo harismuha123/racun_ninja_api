@@ -30,7 +30,7 @@ Flight::route("POST /auth/register", function () {
     $existingUsername = Flight::rm()->get_user($user["username"]);
 
     $validEmail = Flight::rv()->validateEmail($user["email_address"]);
-    $existingEmail = Flight::rm()->get_user_by_email($user["email_address"]);
+    $existingEmail = Flight::rm()->get_user($user["email_address"]);
 
     $validPassword = Flight::rv()->validatePassword($user["password"]);
 
