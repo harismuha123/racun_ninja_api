@@ -59,16 +59,18 @@ Flight::register('rum', 'ResidentialUnitManager');
 Flight::register('bm', 'BillManager');
 Flight::register('ta', 'TelemachAdapter');
 
-
-
 Flight::route('OPTIONS /auth/*', function() {
+    Flight::json('Anyway, return something for OPTIONS requests');
+});
+
+Flight::route('OPTIONS /private/*', function() {
     Flight::json('Anyway, return something for OPTIONS requests');
 });
 
 Flight::before('json', function () {
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET,PUT,POST,DELETE');
-    header('Access-Control-Allow-Headers: Content-Type');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
 });
 /**
  * Start the Flight framework.
