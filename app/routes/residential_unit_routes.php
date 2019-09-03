@@ -38,11 +38,11 @@ Flight::route("GET /private/residential_units/@user_id", function ($user_id) {
     $residential_units = Flight::rum()->get_residential_units($user_id);
     if($residential_units) {
         Flight::json([
-            "data" => $residential_units
+            "residential_units" => $residential_units
         ]);
     } else {
         Flight::json([
-            "data" => []
+            "residential_units" => []
         ]);
     }
 });
