@@ -1,6 +1,7 @@
 <?php
 /**
  * Entry point for the FlightPHP project, bundled with Swagger OpenAPI documentation generator.
+ * This is a test message.
  */
 
 require_once __DIR__."/vendor/autoload.php";
