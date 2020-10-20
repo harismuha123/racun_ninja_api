@@ -14,7 +14,7 @@ class SampleTest extends TestCase {
      * @return void
      */
     public function setUp() {
-        $this->test_var = "This is a test variable.";
+        $this->test_var = "This is a test variable. LaLaLa";
     }
 
     /**
